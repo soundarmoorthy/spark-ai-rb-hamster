@@ -1,0 +1,3 @@
+[submodule "spark_ai_examples/fhir.resources"]
+	path = spark_ai_examples/fhir.resources
+	url = https://github.com/nazrulworld/fhir.resources.git

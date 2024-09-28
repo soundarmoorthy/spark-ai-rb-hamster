@@ -5,6 +5,7 @@
 import requests
 import os
 
+
 class SyntheaDataDownloader:
     def __init__(self, url, zip_filename, extract_to='./data/extracted'):
         self.url = url
@@ -19,9 +20,10 @@ class SyntheaDataDownloader:
             self.extract()
         else:
             print(f'{self.zip_filename} already exists.')
-            # extract if the json files in the ./data folder is empty
-            if len(os.listdir(self.extract_to)) == 0:
+            # extract if the json files in the ./data folder is empty, filter for json files
+            if not any([f.endswith('.json') for f in os.listdir(self.extract_to)]):
                 self.extract()
+
 
     def download(self):
         print(f'Downloading {self.url} to {self.zip_filename}')
@@ -39,6 +41,7 @@ class SyntheaDataDownloader:
 
 # Usage
 if __name__ == "__main__":
+    # Download the Synthea sample data in FHIR R4 json format
     url = 'https://synthetichealth.github.io/synthea-sample-data/downloads/latest/synthea_sample_data_fhir_latest.zip'
     # Create the data folder
     downloader = SyntheaDataDownloader(url, './data/synthea_sample_data_fhir_r4_sep2019.zip')

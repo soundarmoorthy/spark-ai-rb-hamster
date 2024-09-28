@@ -1,6 +1,6 @@
 .venv/
 data/*.zip
-data/extracted/**
+data/extracted/*.json
 **/*.swp
 **/*.zip
 .idea/**
