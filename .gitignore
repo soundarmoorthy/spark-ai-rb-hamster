@@ -2,4 +2,4 @@
 data/**
 **/*.swp
 **/*.zip
-.idea/
+.idea/**
