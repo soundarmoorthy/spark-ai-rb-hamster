@@ -5,9 +5,11 @@
 import requests
 import os
 
+from src import BASE_DIR
+
 
 class SyntheaDataDownloader:
-    def __init__(self, url, zip_filename, extract_to='./data/extracted'):
+    def __init__(self, url, zip_filename, extract_to= os.path.join(BASE_DIR, 'extracted')):
         self.url = url
         self.zip_filename = zip_filename
         self.extract_to = extract_to
@@ -35,16 +37,17 @@ class SyntheaDataDownloader:
         # Extract the file
     def extract(self):
         import zipfile
+        # extract each file and log
         with zipfile.ZipFile(self.zip_filename, 'r') as zip_ref:
             zip_ref.extractall(self.extract_to)
         print(f'{self.zip_filename} extracted to {self.extract_to}')
 
+
 # Usage
 if __name__ == "__main__":
     # download from smart on fhir
-    # Download the Synthea sample data in FHIR R4 json format
-    # https://github.com/smart-on-fhir/sample-bulk-fhir-datasets/archive/refs/heads/100-patients.zip
+    # Download the Synthea sample data in FHIR R4 json format. Use the 100 patients if you want less.
     url = 'https://github.com/smart-on-fhir/sample-bulk-fhir-datasets/archive/refs/heads/100-patients.zip'
     # Create the data folder
-    downloader = SyntheaDataDownloader(url, './data/sample-bulk-fhir-data.zip')
+    downloader = SyntheaDataDownloader(url, os.path.join(BASE_DIR, 'sample-bulk-fhir-data.zip'))
     downloader.download_and_extract()
