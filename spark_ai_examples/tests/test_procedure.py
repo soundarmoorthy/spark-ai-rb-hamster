@@ -1,23 +1,24 @@
 
 
-
 import unittest
 import json
-from pydantic import ValidationError
-from fhir.resources.fhir.res import construct_fhir_element
+from fhirclient import client
+from fhirclient.models import procedure
+
+# Use fhirclient. Write a test to check if the below data() for a
+# procedure resource can be loaded as a FHIR resource using fhirclient.
 
 class TestProcedure(unittest.TestCase):
     def test_procedure(self):
-        try:
-            resource = json.loads(data())
-            resource_type = resource.get('resourceType')
-            self.assertEqual(resource_type, 'Procedure')
-            fhir_resource = construct_fhir_element(resource_type, resource)
-            self.assertEqual(fhir_resource.resource_type, 'Procedure')
-        except ValidationError as e:
-            self.fail(f'ValidationError: {e}')
-        except BaseException as e:
-            self.fail(f'Exception: {e}')
+        resource = json.loads(data())
+        resource_type = resource.get('resourceType')
+        self.assertEqual(resource_type, 'Procedure')
+
+        fhir_resource = procedure.Procedure(resource, strict=False)
+        self.assertEqual(fhir_resource.resource_type, 'Procedure')
+
+if __name__ == '__main__':
+    unittest.main()
 
 def data():
     return """
@@ -56,6 +57,3 @@ def data():
       }
     }
     """
-
-if __name__ == '__main__':
-    unittest.main()

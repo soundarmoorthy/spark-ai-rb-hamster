@@ -2,6 +2,8 @@
 data/*.zip
 data/extracted/*.json
 data/extracted/*.ndjson
+copilot/
 **/*.swp
 **/*.zip
 .idea/**
+**/__pycache__/**

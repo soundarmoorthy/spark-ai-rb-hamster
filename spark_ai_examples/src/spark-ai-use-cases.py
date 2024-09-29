@@ -1,38 +1,41 @@
-
-
 import os
 import json
+import glob
+import sys
+import logging
+from resource_mapper import ResourceMapper
 
-from fhir.resources import construct_fhir_element
-from pydantic import ValidationError
+# Function to process FHIR resources from JSON files
+def process_fhir_resources(directory):
+    resources = {}
+    json_files = glob.glob(os.path.join(directory, '*.ndjson'))
+    for file_path in json_files:
+        logging.info(f'Processing {file_path}')
+        with open(file_path, 'r') as file:
+            for line in file:
+                resource_json = json.loads(line)
+                tyyp, resource = ResourceMapper.map(resource_json)
+                if resource:
+                    if tyyp not in resources:
+                        resources[tyyp] = []
+                    resources[tyyp].append(resource)
+                logging.info(f'Loaded {tyyp} resource with ID: {resource.id}')
+    return resources
 
+# Example usage
+if __name__ == "__main__":
+    # Change root logger level from WARNING (default) to NOTSET in order for all messages to be delegated.
+    logging.getLogger().setLevel(logging.NOTSET)
 
-def parse_fhir_resources(directory):
-    # dictionary of resource name and list of resources
-    fhir_resources = {}
-    # read the ndjson files. based on the resourceType in the json,
-    # add to the dictionary
-    for file in os.listdir(directory):
-        if file.endswith('.ndjson'):
-            with open(os.path.join(directory, file)) as f:
-                for line in f:
-                    try:
-                        resource = json.loads(line)
-                        resource_type = resource.get('resourceType')
-                        if resource_type:
-                            if resource_type not in fhir_resources:
-                                fhir_resources[resource_type] = []
-                            fhir_resources[resource_type].append(construct_fhir_element(resource_type, resource))
-                    except BaseException as e:
-                        print(f'Error parsing line: {line}')
-                        print(e)
-                        continue
-    return fhir_resources
-
-# Usage
-directory = './../data/extracted'
-fhir_resources = parse_fhir_resources(directory)
-
-# Print the number of resources
-for resource_type, resources in fhir_resources.items():
-    print(f'{resource_type}: {len(resources)}')
+    # Add stdout handler, with level INFO
+    console = logging.StreamHandler(sys.stdout)
+    console.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(name)-13s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger().addHandler(console)
+    directory_path = './../../data/extracted'
+    resources = process_fhir_resources(directory_path)
+    # print the number of resources loaded by type
+    for resource_type, resources in resources.items():
+        logging.info(f'{resource_type}: {len(resources)}')
+    logging.info('Processing complete')
