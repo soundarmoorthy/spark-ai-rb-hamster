@@ -47,7 +47,7 @@ class SyntheaDataDownloader:
 if __name__ == "__main__":
     # download from smart on fhir
     # Download the Synthea sample data in FHIR R4 json format. Use the 100 patients if you want less.
-    url = 'https://github.com/smart-on-fhir/sample-bulk-fhir-datasets/archive/refs/heads/100-patients.zip'
+    url = 'https://github.com/smart-on-fhir/sample-bulk-fhir-datasets/archive/refs/heads/1000-patients.zip'
     # Create the data folder
     downloader = SyntheaDataDownloader(url, os.path.join(BASE_DIR, 'sample-bulk-fhir-data.zip'))
     downloader.download_and_extract()

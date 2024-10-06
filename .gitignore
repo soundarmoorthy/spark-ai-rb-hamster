@@ -8,3 +8,5 @@ copilot/
 **/*.zip
 .idea
 **/__pycache__/**
+bin/
+lib/
