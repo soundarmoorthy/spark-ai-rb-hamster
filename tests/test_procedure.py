@@ -2,8 +2,11 @@
 
 import unittest
 import json
-from fhirclient import client
-from fhirclient.models import procedure
+
+from fhirclient.models.procedure import Procedure
+from marshmallow.fields import String
+
+from src.resource_mapper import ResourceMapper
 
 # Use fhirclient. Write a test to check if the below data() for a
 # procedure resource can be loaded as a FHIR resource using fhirclient.
@@ -11,11 +14,18 @@ from fhirclient.models import procedure
 class TestProcedure(unittest.TestCase):
     def test_procedure(self):
         resource = json.loads(data())
-        resource_type = resource.get('resourceType')
+
+        # Use resourceMapper to map the resource to a FHIR resource
+        resource_type, obj = ResourceMapper.map(resource)
+
+        # Assert the object is not null
+        self.assertIsNotNone(obj)
+
+        # Assert the object is of type Procedure
         self.assertEqual(resource_type, 'Procedure')
 
-        fhir_resource = procedure.Procedure(resource, strict=False)
-        self.assertEqual(fhir_resource.resource_type, 'Procedure')
+        # Assert code.coding.code is 710824005
+        self.assertEqual(obj.code.coding[0].code, '710824005')
 
 if __name__ == '__main__':
     unittest.main()
